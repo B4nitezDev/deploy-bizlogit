@@ -1,0 +1,20 @@
+{
+  "Projects": [
+    {
+      "Name": "Administration",
+      "Path": "C:\\Workspace\\Bizlogit\\bizion\\administration\\Admin.ApiService\\Admin.ApiService\\Admin.ApiService"
+    },
+    {
+      "Name": "Operation",
+      "Path": "C:\\Workspace\\Bizlogit\\bizion\\operation"
+    },
+    {
+      "Name": "Konetic",
+      "Path": "C:\\Workspace\\Bizlogit\\konetic\\trunk"
+    },
+    {
+      "Name": "IDMS",
+      "Path": "C:\\Workspace\\Bizlogit\\konetic\\trunk"
+    }
+  ]
+}
