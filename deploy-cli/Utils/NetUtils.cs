@@ -1,15 +1,17 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
 
 namespace deploy_cli.Utils
 {
     public static class NetUtils
     {
-        public static void RunDotNetCommand(string workingDirectory, string command)
+        public static void RunCommand(string command, string arguments, string workingDirectory = "")
         {
-            var processStartInfo = new ProcessStartInfo
+            ProcessStartInfo processStartInfo = new ()
             {
-                FileName = "dotnet",
-                Arguments = command,
+                FileName = command,
+                Arguments = arguments,
                 WorkingDirectory = workingDirectory,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
@@ -17,73 +19,111 @@ namespace deploy_cli.Utils
                 CreateNoWindow = true
             };
 
-            using (var process = Process.Start(processStartInfo))
+            using (Process? process = Process.Start(processStartInfo))
             {
                 if (process == null)
                 {
-                    Console.WriteLine("Error: Unable to start the dotnet process.");
+                    Console.WriteLine($"Error: No se pudo iniciar el proceso '{command}'.");
                     return;
                 }
 
-                // Capturar la salida del comando
                 string output = process.StandardOutput.ReadToEnd();
                 string error = process.StandardError.ReadToEnd();
 
                 process.WaitForExit();
 
-                // Mostrar la salida del comando
-                if (!string.IsNullOrEmpty(output))
-                {
-                    Console.WriteLine(output);
-                }
+                if (!string.IsNullOrEmpty(output)) Console.WriteLine(output);
+                if (!string.IsNullOrEmpty(error)) Console.WriteLine($"Error:\n{error}");
 
-                // Mostrar errores si los hay
-                if (!string.IsNullOrEmpty(error))
-                {
-                    Console.WriteLine("Error:");
-                    Console.WriteLine(error);
-                }
-
-                if (process.ExitCode != 0)
-                {
-                    Console.WriteLine($"Command failed with exit code {process.ExitCode}.");
-                }
-                else
-                {
-                    Console.WriteLine("Command executed successfully.");
-                }
+                Console.WriteLine($"Comando finalizado con código {process.ExitCode}.");
             }
         }
 
+        private static bool IsNetFramework(string csprojFile)
+        {
+            string content = File.ReadAllText(csprojFile);
+            return content.Contains("<TargetFrameworkVersion>v4.8</TargetFrameworkVersion>");
+        }
 
         public static void PublishProject(string projectPath)
         {
             if (!Directory.Exists(projectPath))
             {
-                Console.WriteLine($"Error: The path '{projectPath}' does not exist.");
+                Console.WriteLine($"Error: La ruta '{projectPath}' no existe.");
                 return;
             }
 
             string[] csprojFiles = Directory.GetFiles(projectPath, "*.csproj", SearchOption.TopDirectoryOnly);
             if (csprojFiles.Length == 0)
             {
-                Console.WriteLine($"Error: No .csproj file found in {projectPath}.");
+                Console.WriteLine($"Error: No se encontró ningún archivo .csproj en {projectPath}.");
                 return;
             }
 
             string csprojFile = csprojFiles[0];
-            Console.WriteLine($"Found project file: {csprojFile}");
+            Console.WriteLine($"Archivo de proyecto encontrado: {csprojFile}");
 
-            string publishFolder = Path.Combine(Path.GetDirectoryName(csprojFile), "bin", "Release", "net6.0", "publish");
-
-            if (Directory.Exists(publishFolder))
+            bool isFramework = IsNetFramework(csprojFile);
+            if (isFramework)
             {
-                Console.WriteLine($"Deleting existing publish folder: {publishFolder}");
-                Directory.Delete(publishFolder, true);
+                Console.WriteLine("Proyecto .NET Framework detectado. Usando MSBuild...");
+                PublishWithMSBuild(csprojFile);
+            }
+            else
+            {
+                Console.WriteLine("Proyecto .NET Core/.NET detectado. Usando dotnet publish...");
+                PublishWithDotNet(csprojFile);
+            }
+        }
+
+        private static void PublishWithMSBuild(string csprojFile)
+        {
+            string msBuildPath = @"C:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Current\Bin\MSBuild.exe";
+
+            if (!File.Exists(msBuildPath))
+            {
+                Console.WriteLine("Error: MSBuild no encontrado. Asegúrate de que Visual Studio está instalado.");
+                return;
             }
 
-            string publishCommand = $"publish \"{csprojFile}\" --configuration Release --framework net6.0 --output \"{publishFolder}\"";
-            RunDotNetCommand(Path.GetDirectoryName(csprojFile), publishCommand);
+            if (csprojFile == null)
+            {
+                Console.WriteLine("Error: No se pudo determinar el directorio del proyecto.");
+                return;
+            }
+
+            string? projectDirectory = Path.GetDirectoryName(csprojFile);
+            if (projectDirectory == null)
+            {
+                Console.WriteLine("Error: No se pudo determinar el directorio del proyecto.");
+                return;
+            }
+
+            string publishDir = Path.Combine(projectDirectory, "publish");
+            string arguments = $"\"{csprojFile}\" /p:Configuration=Release /p:DeployOnBuild=true /p:PublishDir=\"{publishDir}\"";
+
+            RunCommand(msBuildPath, arguments);
+        }
+
+        private static void PublishWithDotNet(string csprojFile)
+        {
+            if (string.IsNullOrEmpty(csprojFile))
+            {
+                Console.WriteLine("Error: El archivo .csproj no puede ser nulo o vacío.");
+                return;
+            }
+
+            string? projectDirectory = Path.GetDirectoryName(csprojFile);
+            if (projectDirectory == null)
+            {
+                Console.WriteLine("Error: No se pudo determinar el directorio del proyecto.");
+                return;
+            }
+
+            string publishFolder = Path.Combine(projectDirectory, "bin", "Release", "publish");
+            string arguments = $"publish \"{csprojFile}\" --configuration Release --output \"{publishFolder}\"";
+
+            RunCommand("dotnet", arguments);
         }
     }
 }

@@ -52,11 +52,12 @@ namespace MyCliApp
             }
 
             Console.WriteLine("Cleaning the solution...");
-            NetUtils.RunDotNetCommand(project.Path, "clean");
+            NetUtils.RunCommand("dotnet", "clean", project.Path);
+
 
             // Compilar la solución en modo Release
             Console.WriteLine("Building the solution in Release mode...");
-            NetUtils.RunDotNetCommand(project.Path, "build --configuration Release");
+            NetUtils.RunCommand( "dotnet", "build --configuration Release", project.Path);
 
             // Publicar el proyecto
             Console.WriteLine("Publishing the project...");
