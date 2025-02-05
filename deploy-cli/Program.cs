@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
+﻿using System.Diagnostics;
 using System.Text.Json;
 
 namespace MyCliApp
@@ -72,6 +69,76 @@ namespace MyCliApp
             // Publicar el proyecto
             Console.WriteLine("Publishing the project...");
             PublishProject(project.Path);
+
+            // Ejecutar el script de PowerShell si está configurado
+            if (!string.IsNullOrEmpty(project.PowerShellScript))
+            {
+                Console.WriteLine($"Executing PowerShell script: {project.PowerShellScript}");
+                RunPowerShellScript(project.PowerShellScript);
+            }
+            else
+            {
+                Console.WriteLine("No PowerShell script configured for this project.");
+            }
+        }
+
+        static void RunPowerShellScript(string scriptPath)
+        {
+            if (!File.Exists(scriptPath))
+            {
+                Console.WriteLine($"Error: Script file not found at {scriptPath}.");
+                return;
+            }
+
+            RunPowerShellCommand(scriptPath);
+        }
+
+        static void RunPowerShellCommand(string script)
+        {
+            var processStartInfo = new ProcessStartInfo
+            {
+                FileName = "powershell.exe",
+                Arguments = $"-NoProfile -ExecutionPolicy Bypass -File \"{script}\"",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using (var process = Process.Start(processStartInfo))
+            {
+                if (process == null)
+                {
+                    Console.WriteLine("Error: Unable to start PowerShell process.");
+                    return;
+                }
+
+                string output = process.StandardOutput.ReadToEnd();
+                string error = process.StandardError.ReadToEnd();
+
+                process.WaitForExit();
+
+                if (!string.IsNullOrEmpty(output))
+                {
+                    Console.WriteLine("PowerShell Output:");
+                    Console.WriteLine(output);
+                }
+
+                if (!string.IsNullOrEmpty(error))
+                {
+                    Console.WriteLine("PowerShell Error:");
+                    Console.WriteLine(error);
+                }
+
+                if (process.ExitCode != 0)
+                {
+                    Console.WriteLine($"PowerShell command failed with exit code {process.ExitCode}.");
+                }
+                else
+                {
+                    Console.WriteLine("PowerShell command executed successfully.");
+                }
+            }
         }
 
         static void RunDotNetCommand(string workingDirectory, string command)
@@ -124,6 +191,7 @@ namespace MyCliApp
                 }
             }
         }
+
         static void PublishProject(string projectPath)
         {
             // Verificar si la ruta existe
@@ -191,5 +259,7 @@ namespace MyCliApp
     {
         public string Name { get; set; } = string.Empty;
         public string Path { get; set; } = string.Empty;
+        public string DestPath { get; set; } = string.Empty;
+        public string PowerShellScript { get; set; } = string.Empty;
     }
 }

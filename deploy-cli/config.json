@@ -2,19 +2,27 @@
   "Projects": [
     {
       "Name": "Administration",
-      "Path": "C:\\Workspace\\Bizlogit\\bizion\\administration\\Admin.ApiService\\Admin.ApiService\\Admin.ApiService"
+      "Path": "C:\\Workspace\\Bizlogit\\bizion\\administration\\Admin.ApiService\\Admin.ApiService\\Admin.ApiService",
+      "DestPath": "C:\\Workspace\\Bizlogit\\Deploy",
+      "PowerShellScript": "C:\\Scripts\\bizionApi.ps1"
     },
     {
       "Name": "Operation",
-      "Path": "C:\\Workspace\\Bizlogit\\bizion\\operation"
+      "Path": "C:\\Workspace\\Bizlogit\\bizion\\operation\\Bizion.Operation.ApiService",
+      "DestPath": "C:\\Workspace\\Bizlogit\\Deploy",
+      "PowerShellScript": "C:\\Scripts\\operation.ps1"
     },
     {
       "Name": "Konetic",
-      "Path": "C:\\Workspace\\Bizlogit\\konetic\\trunk"
+      "Path": "C:\\Workspace\\Bizlogit\\konetic\\trunk\\Konetic.Web",
+      "DestPath": "C:\\Workspace\\Bizlogit\\Deploy",
+      "PowerShellScript": "C:\\Scripts\\konetic.ps1"
     },
     {
       "Name": "IDMS",
-      "Path": "C:\\Workspace\\Bizlogit\\konetic\\trunk"
+      "Path": "C:\\Workspace\\Bizlogit\\konetic\\trunk\\Konetic.IDMS.Web",
+      "DestPath": "C:\\Workspace\\Bizlogit\\Deploy",
+      "PowerShellScript": "C:\\Scripts\\idms.ps1"
     }
   ]
 }
