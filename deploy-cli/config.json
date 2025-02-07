@@ -27,6 +27,20 @@
       "DestPath": "C:\\Users\\PC\\Desktop\\Workspace\\Deploy",
       "Version": 4,
       "PowerShellScript": "C:\\Users\\PC\\Desktop\\deploy-bizlogit\\deploy-cli\\Scripts\\idms.ps1"
+    },
+    {
+      "Name": "Mobile",
+      "Path": "C:\\Users\\PC\\Desktop\\Workspace\\bizion\\operation\\Bizion.Operation.Mobile",
+      "DestPath": "C:\\Users\\PC\\Desktop\\Workspace\\Deploy",
+      "Version": 100,
+      "PowerShellScript": "C:\\Users\\PC\\Desktop\\deploy-bizlogit\\deploy-cli\\Scripts\\mobile.ps1"
+    },
+    {
+      "Name": "Bizion",
+      "Path": "C:\\Users\\PC\\Desktop\\Workspace\\bizion\\administration\\Admin.Web",
+      "DestPath": "C:\\Users\\PC\\Desktop\\Workspace\\Deploy",
+      "Version": 101,
+      "PowerShellScript": "C:\\Users\\PC\\Desktop\\deploy-bizlogit\\deploy-cli\\Scripts\\bizion.ps1"
     }
   ]
 }

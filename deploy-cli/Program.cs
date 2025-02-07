@@ -16,15 +16,15 @@ namespace MyCliApp
                 {
                     Console.WriteLine($"{i + 1}. {config.Projects[i].Name} - {config.Projects[i].Path}");
                 }
-                Console.WriteLine("5. All Projects");
+                Console.WriteLine($"{config.Projects.Count +1}. All Projects");
 
-                if (!int.TryParse(Console.ReadLine(), out int selection) || selection < 1 || selection > 5)
+                if (!int.TryParse(Console.ReadLine(), out int selection) || selection < 1 || selection > config.Projects.Count + 1)
                 {
                     Console.WriteLine("Invalid selection. Please choose a number between 1 and 5.");
                     return;
                 }
 
-                if (selection == 5)
+                if (selection == config.Projects.Count +1)
                 {
                     Console.WriteLine("Selected all projects:");
                     foreach (var project in config.Projects)
@@ -61,19 +61,30 @@ namespace MyCliApp
                     throw new DirectoryNotFoundException($"Error: The path '{project.Path}' does not exist.");
                 }
 
-                Console.WriteLine("Cleaning the solution...");
-                NetUtils.RunCommand("dotnet", "clean", project.Path);
-
                 // Compilar la solución en modo Release
                 Console.WriteLine("Building the solution in Release mode...");
                 if(project.Version == 6)
                 {
                     Console.WriteLine("NET 6");
+
+                    Console.WriteLine("Cleaning the solution...");
+                    NetUtils.RunCommand("dotnet", "clean", project.Path);
+
+
                     NetUtils.RunCommand("dotnet", "build --configuration Release", project.Path);
+                    // Publicar el proyecto
+                    Console.WriteLine("Publishing the project...");
+                    NetUtils.PublishProject(project.Path.ToString(), project.Version);
+
                 }
                 else if (project.Version == 4)
                 {
                     Console.WriteLine("NET 4");
+
+                    Console.WriteLine("Cleaning the solution...");
+                    NetUtils.RunCommand("dotnet", "clean", project.Path);
+
+
                     string msBuildPath = @"C:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Current\Bin\MSBuild.exe";
                     string csprojFile = Directory.GetFiles(project.Path, "*.csproj", SearchOption.TopDirectoryOnly).FirstOrDefault();
                     if (csprojFile == null)
@@ -81,15 +92,28 @@ namespace MyCliApp
                         throw new FileNotFoundException($"Error: No se encontró ningún archivo .csproj en {project.Path}.");
                     }
                     NetUtils.RunCommand(msBuildPath, $"\"{csprojFile}\" /p:Configuration=Release", project.Path);
+                    // Publicar el proyecto
+                    Console.WriteLine("Publishing the project...");
+                    NetUtils.PublishProject(project.Path.ToString(), project.Version);
+
+                }
+                else if(project.Version == 100)
+                {
+                    Console.WriteLine("NODE");
+                    FrontUtil.BuildFrontMobile(project.Path);
+                    //CommandUtils.RunPowerShellScript(project.PowerShellScript);
+                }
+                else if (project.Version == 101)
+                {
+                    Console.WriteLine("NODE");
+                    FrontUtil.BuildFromBizion(project.Path);
+                    CommandUtils.RunPowerShellScript(project.PowerShellScript);
                 }
                 else
                 {
                     Console.WriteLine("Version no soportada");
                 }
-                // Publicar el proyecto
-                Console.WriteLine("Publishing the project...");
-                NetUtils.PublishProject(project.Path.ToString(), project.Version);
-
+               
                 // Ejecutar el script de PowerShell si está configurado
                 if (!string.IsNullOrEmpty(project.PowerShellScript))
                 {
