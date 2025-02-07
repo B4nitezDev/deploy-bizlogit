@@ -2,6 +2,6 @@
 {
     public class Config
     {
-        public List<Project> Projects { get; set; } = new List<Project>();
+        public List<Project> Projects { get; set; } = new ();
     }
 }

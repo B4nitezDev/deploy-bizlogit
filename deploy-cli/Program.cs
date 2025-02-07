@@ -66,8 +66,26 @@ namespace MyCliApp
 
                 // Compilar la solución en modo Release
                 Console.WriteLine("Building the solution in Release mode...");
-                NetUtils.RunCommand("dotnet", "build --configuration Release", project.Path);
-
+                if(project.Version == 6)
+                {
+                    Console.WriteLine("NET 6");
+                    NetUtils.RunCommand("dotnet", "build --configuration Release", project.Path);
+                }
+                else if (project.Version == 4)
+                {
+                    Console.WriteLine("NET 4");
+                    string msBuildPath = @"C:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Current\Bin\MSBuild.exe";
+                    string csprojFile = Directory.GetFiles(project.Path, "*.csproj", SearchOption.TopDirectoryOnly).FirstOrDefault();
+                    if (csprojFile == null)
+                    {
+                        throw new FileNotFoundException($"Error: No se encontró ningún archivo .csproj en {project.Path}.");
+                    }
+                    NetUtils.RunCommand(msBuildPath, $"\"{csprojFile}\" /p:Configuration=Release", project.Path);
+                }
+                else
+                {
+                    Console.WriteLine("Version no soportada");
+                }
                 // Publicar el proyecto
                 Console.WriteLine("Publishing the project...");
                 NetUtils.PublishProject(project.Path.ToString(), project.Version);
