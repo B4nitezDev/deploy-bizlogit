@@ -8,8 +8,7 @@ namespace deploy_cli.Utils
         {
             if (!File.Exists(scriptPath))
             {
-                Console.WriteLine($"Error: Script file not found at {scriptPath}.");
-                return;
+                throw new FileNotFoundException($"Error: Script file not found at {scriptPath}.");
             }
 
             RunPowerShellCommand(null, scriptPath);
@@ -54,8 +53,7 @@ namespace deploy_cli.Utils
             {
                 if (process == null)
                 {
-                    Console.WriteLine("Error: Unable to start PowerShell process.");
-                    return;
+                    throw new InvalidOperationException("Error: Unable to start PowerShell process.");
                 }
 
                 string output = process.StandardOutput.ReadToEnd();
@@ -71,13 +69,12 @@ namespace deploy_cli.Utils
 
                 if (!string.IsNullOrEmpty(error))
                 {
-                    Console.WriteLine("PowerShell Error:");
-                    Console.WriteLine(error);
+                    throw new InvalidOperationException($"PowerShell Error: {error}");
                 }
 
                 if (process.ExitCode != 0)
                 {
-                    Console.WriteLine($"PowerShell command failed with exit code {process.ExitCode}.");
+                    throw new InvalidOperationException($"PowerShell command failed with exit code {process.ExitCode}.");
                 }
                 else
                 {
@@ -85,6 +82,5 @@ namespace deploy_cli.Utils
                 }
             }
         }
-
     }
 }

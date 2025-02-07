@@ -8,7 +8,7 @@ namespace deploy_cli.Utils
     {
         public static void RunCommand(string command, string arguments, string workingDirectory = "")
         {
-            ProcessStartInfo processStartInfo = new ()
+            ProcessStartInfo processStartInfo = new()
             {
                 FileName = command,
                 Arguments = arguments,
@@ -23,8 +23,7 @@ namespace deploy_cli.Utils
             {
                 if (process == null)
                 {
-                    Console.WriteLine($"Error: No se pudo iniciar el proceso '{command}'.");
-                    return;
+                    throw new InvalidOperationException($"Error: No se pudo iniciar el proceso '{command}'.");
                 }
 
                 string output = process.StandardOutput.ReadToEnd();
@@ -33,9 +32,7 @@ namespace deploy_cli.Utils
                 process.WaitForExit();
 
                 if (!string.IsNullOrEmpty(output)) Console.WriteLine(output);
-                if (!string.IsNullOrEmpty(error)) Console.WriteLine($"Error:\n{error}");
-
-                if(error != null) throw new Exception(error);
+                if (!string.IsNullOrEmpty(error)) throw new InvalidOperationException($"Error:\n{error}");
 
                 Console.WriteLine($"Comando finalizado con código {process.ExitCode}.");
             }
@@ -51,15 +48,13 @@ namespace deploy_cli.Utils
         {
             if (!Directory.Exists(projectPath))
             {
-                Console.WriteLine($"Error: La ruta '{projectPath}' no existe.");
-                return;
+                throw new DirectoryNotFoundException($"Error: La ruta '{projectPath}' no existe.");
             }
 
             string[] csprojFiles = Directory.GetFiles(projectPath, "*.csproj", SearchOption.TopDirectoryOnly);
             if (csprojFiles.Length == 0)
             {
-                Console.WriteLine($"Error: No se encontró ningún archivo .csproj en {projectPath}.");
-                return;
+                throw new FileNotFoundException($"Error: No se encontró ningún archivo .csproj en {projectPath}.");
             }
 
             string csprojFile = csprojFiles[0];
@@ -84,21 +79,18 @@ namespace deploy_cli.Utils
 
             if (!File.Exists(msBuildPath))
             {
-                Console.WriteLine("Error: MSBuild no encontrado. Asegúrate de que Visual Studio está instalado.");
-                return;
+                throw new FileNotFoundException("Error: MSBuild no encontrado. Asegúrate de que Visual Studio está instalado.");
             }
 
             if (csprojFile == null)
             {
-                Console.WriteLine("Error: No se pudo determinar el directorio del proyecto.");
-                return;
+                throw new InvalidOperationException("Error: No se pudo determinar el directorio del proyecto.");
             }
 
             string? projectDirectory = Path.GetDirectoryName(csprojFile);
             if (projectDirectory == null)
             {
-                Console.WriteLine("Error: No se pudo determinar el directorio del proyecto.");
-                return;
+                throw new InvalidOperationException("Error: No se pudo determinar el directorio del proyecto.");
             }
 
             string publishDir = Path.Combine(projectDirectory, "publish");
@@ -111,15 +103,13 @@ namespace deploy_cli.Utils
         {
             if (string.IsNullOrEmpty(csprojFile))
             {
-                Console.WriteLine("Error: El archivo .csproj no puede ser nulo o vacío.");
-                return;
+                throw new InvalidOperationException("Error: El archivo .csproj no puede ser nulo o vacío.");
             }
 
             string? projectDirectory = Path.GetDirectoryName(csprojFile);
             if (projectDirectory == null)
             {
-                Console.WriteLine("Error: No se pudo determinar el directorio del proyecto.");
-                return;
+                throw new InvalidOperationException("Error: No se pudo determinar el directorio del proyecto.");
             }
 
             string publishFolder = Path.Combine(projectDirectory, "bin", "Release", "publish");
