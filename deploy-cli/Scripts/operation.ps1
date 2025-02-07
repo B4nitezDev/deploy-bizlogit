@@ -1,8 +1,8 @@
 # Ruta de la carpeta donde se encuentran los archivos a procesar
-$carpetaOrigen = "c:\workspace\bizlogit\bizion\operation\bizion.operation.apiservice\bin\release\net6.0\publish"
+$carpetaOrigen = "C:\Users\PC\Desktop\Workspace\bizion\operation\bizion.operation.apiservice\bin\release\net6.0\publish"
 
 # Ruta de la carpeta donde se guardará el archivo zip
-$carpetaDestino = "C:\workspace\bizlogit\Deploy"
+$carpetaDestino = "C:\Users\PC\Desktop\Workspace\bizion\Deploy"
 
 # Crear la carpeta de destino si no existe
 if (-not (Test-Path $carpetaDestino)) {

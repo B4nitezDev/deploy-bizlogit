@@ -12,7 +12,7 @@
       "Path": "C:\\Users\\PC\\Desktop\\Workspace\\bizion\\operation\\Bizion.Operation.ApiService",
       "DestPath": "C:\\Users\\PC\\Desktop\\Workspace\\Deploy",
       "Version": 6,
-      "PowerShellScript": ".\\Scripts\\operation.ps1"
+      "PowerShellScript": "C:\\Users\\PC\\Desktop\\deploy-bizlogit\\deploy-cli\\Scripts\\operation.ps1"
     },
     {
       "Name": "Konetic",
@@ -26,7 +26,7 @@
       "Path": "C:\\Users\\PC\\Desktop\\Workspace\\konetic\\trunk\\Konetic.IDMS.Web",
       "DestPath": "C:\\Users\\PC\\Desktop\\Workspace\\Deploy",
       "Version": 4,
-      "PowerShellScript": ".\\Scripts\\idms.ps1"
+      "PowerShellScript": "C:\\Users\\PC\\Desktop\\deploy-bizlogit\\deploy-cli\\Scripts\\idms.ps1"
     }
   ]
 }
