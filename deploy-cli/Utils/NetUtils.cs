@@ -32,7 +32,12 @@ namespace deploy_cli.Utils
                 process.WaitForExit();
 
                 if (!string.IsNullOrEmpty(output)) Console.WriteLine(output);
-                if (!string.IsNullOrEmpty(error)) throw new InvalidOperationException($"Error:\n{error}");
+                if (!string.IsNullOrEmpty(error)) Console.WriteLine($"Error:\n{error}");
+
+                if (process.ExitCode != 0)
+                {
+                    throw new InvalidOperationException($"Error: El comando '{command} {arguments}' falló con el código de salida {process.ExitCode}.");
+                }
 
                 Console.WriteLine($"Comando finalizado con código {process.ExitCode}.");
             }
