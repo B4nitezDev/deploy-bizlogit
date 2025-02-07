@@ -35,6 +35,8 @@ namespace deploy_cli.Utils
                 if (!string.IsNullOrEmpty(output)) Console.WriteLine(output);
                 if (!string.IsNullOrEmpty(error)) Console.WriteLine($"Error:\n{error}");
 
+                if(error != null) throw new Exception(error);
+
                 Console.WriteLine($"Comando finalizado con código {process.ExitCode}.");
             }
         }

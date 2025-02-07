@@ -12,20 +12,43 @@ namespace deploy_cli.Utils
                 return;
             }
 
-            RunPowerShellCommand(scriptPath);
+            RunPowerShellCommand(null, scriptPath);
         }
 
-        public static void RunPowerShellCommand(string script)
+        public static void RunPowerShellCommand(string? script, string? file)
         {
-            var processStartInfo = new ProcessStartInfo
+            ProcessStartInfo processStartInfo;
+
+            if (string.IsNullOrEmpty(script))
             {
-                FileName = "powershell.exe",
-                Arguments = $"-NoProfile -ExecutionPolicy Bypass -File \"{script}\"",
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
+                processStartInfo = new ProcessStartInfo()
+                {
+                    FileName = "powershell.exe",
+                    Arguments = $"-NoProfile -ExecutionPolicy Bypass \"{script}\"",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+            }
+            else if (string.IsNullOrEmpty(file))
+            {
+                processStartInfo = new ProcessStartInfo()
+                {
+                    FileName = "powershell.exe",
+                    Arguments = $"-NoProfile -ExecutionPolicy Bypass -File \"{script}\"",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+            }
+            else
+            {
+                throw new Exception("Command no valido");
+            }
 
             using (var process = Process.Start(processStartInfo))
             {
