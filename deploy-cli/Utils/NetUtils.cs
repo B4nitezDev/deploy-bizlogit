@@ -64,7 +64,7 @@ namespace deploy_cli.Utils
                 Console.WriteLine("Proyecto .NET Framework detectado. Usando MSBuild...");
                 PublishWithMSBuild(csprojFile);
             }
-            else if(version > 4)
+            else if(version == 6)
             {
                 Console.WriteLine("Proyecto .NET Core/.NET detectado. Usando dotnet publish...");
                 PublishWithDotNet(csprojFile);
@@ -93,7 +93,7 @@ namespace deploy_cli.Utils
             string publishDir = Path.Combine(projectDirectory, "publish");
             string arguments = $"\"{csprojFile}\" /p:Configuration=Release /p:DeployOnBuild=true /p:PublishDir=\"{publishDir}\"";
 
-            RunCommand("MSBuild", $"\"{csprojFile}\" /p:Configuration=Release /p:DeployOnBuild=true", projectDirectory);
+            RunCommand(msBuildPath, arguments, projectDirectory);
         }
 
         private static void PublishWithDotNet(string csprojFile)

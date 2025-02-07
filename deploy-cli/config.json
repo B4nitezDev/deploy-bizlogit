@@ -19,7 +19,7 @@
       "Path": "C:\\Users\\PC\\Desktop\\Workspace\\konetic\\trunk\\Konetic.Web",
       "DestPath": "C:\\Users\\PC\\Desktop\\Workspace\\Deploy",
       "Version": 4,
-      "PowerShellScript": ".\\Scripts\\konetic.ps1"
+      "PowerShellScript": "C:\\Users\\PC\\Desktop\\deploy-bizlogit\\deploy-cli\\Scripts\\konetic.ps1"
     },
     {
       "Name": "IDMS",
