@@ -1,8 +1,8 @@
 # Ruta de la carpeta donde se encuentran los archivos a procesar
-$carpetaOrigen = "c:\workspace\bizlogit\konetic\trunk\konetic.idms.web\bin\release\net472\publish"
+$carpetaOrigen = "C:\Users\PC\Desktop\Workspace\konetic\trunk\konetic.idms.web\bin\release\net472\publish"
 
 # Ruta de la carpeta donde se guardará el archivo zip
-$carpetaDestino = "C:\workspace\bizlogit\Deploy"
+$carpetaDestino = "C:\Users\PC\Desktop\Workspace\Deploy"
 
 # Crear la carpeta de destino si no existe
 if (-not (Test-Path $carpetaDestino)) {
