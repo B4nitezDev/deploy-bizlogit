@@ -70,7 +70,7 @@ namespace MyCliApp
 
                 // Publicar el proyecto
                 Console.WriteLine("Publishing the project...");
-                NetUtils.PublishProject(project.Path);
+                NetUtils.PublishProject(project.Path.ToString(), project.Version);
 
                 // Ejecutar el script de PowerShell si está configurado
                 if (!string.IsNullOrEmpty(project.PowerShellScript))

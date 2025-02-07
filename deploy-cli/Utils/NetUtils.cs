@@ -43,13 +43,7 @@ namespace deploy_cli.Utils
             }
         }
 
-        private static bool IsNetFramework(string csprojFile)
-        {
-            string content = File.ReadAllText(csprojFile);
-            return content.Contains("<TargetFrameworkVersion>v4.8</TargetFrameworkVersion>");
-        }
-
-        public static void PublishProject(string projectPath)
+        public static void PublishProject(string projectPath, int version)
         {
             if (!Directory.Exists(projectPath))
             {
@@ -65,16 +59,19 @@ namespace deploy_cli.Utils
             string csprojFile = csprojFiles[0];
             Console.WriteLine($"Archivo de proyecto encontrado: {csprojFile}");
 
-            bool isFramework = IsNetFramework(csprojFile);
-            if (isFramework)
+            if (version == 4)
             {
                 Console.WriteLine("Proyecto .NET Framework detectado. Usando MSBuild...");
                 PublishWithMSBuild(csprojFile);
             }
-            else
+            else if(version > 4)
             {
                 Console.WriteLine("Proyecto .NET Core/.NET detectado. Usando dotnet publish...");
                 PublishWithDotNet(csprojFile);
+            }
+            else
+            {
+                Console.WriteLine("Version de .Net no soportada");
             }
         }
 
@@ -87,13 +84,8 @@ namespace deploy_cli.Utils
                 throw new FileNotFoundException("Error: MSBuild no encontrado. Asegúrate de que Visual Studio está instalado.");
             }
 
-            if (csprojFile == null)
-            {
-                throw new InvalidOperationException("Error: No se pudo determinar el directorio del proyecto.");
-            }
-
             string? projectDirectory = Path.GetDirectoryName(csprojFile);
-            if (projectDirectory == null)
+            if (string.IsNullOrWhiteSpace(projectDirectory))
             {
                 throw new InvalidOperationException("Error: No se pudo determinar el directorio del proyecto.");
             }
@@ -101,18 +93,18 @@ namespace deploy_cli.Utils
             string publishDir = Path.Combine(projectDirectory, "publish");
             string arguments = $"\"{csprojFile}\" /p:Configuration=Release /p:DeployOnBuild=true /p:PublishDir=\"{publishDir}\"";
 
-            RunCommand(msBuildPath, arguments);
+            RunCommand("MSBuild", $"\"{csprojFile}\" /p:Configuration=Release /p:DeployOnBuild=true", projectDirectory);
         }
 
         private static void PublishWithDotNet(string csprojFile)
         {
-            if (string.IsNullOrEmpty(csprojFile))
+            if (string.IsNullOrWhiteSpace(csprojFile))
             {
                 throw new InvalidOperationException("Error: El archivo .csproj no puede ser nulo o vacío.");
             }
 
             string? projectDirectory = Path.GetDirectoryName(csprojFile);
-            if (projectDirectory == null)
+            if (string.IsNullOrWhiteSpace(projectDirectory))
             {
                 throw new InvalidOperationException("Error: No se pudo determinar el directorio del proyecto.");
             }
@@ -120,7 +112,7 @@ namespace deploy_cli.Utils
             string publishFolder = Path.Combine(projectDirectory, "bin", "Release", "publish");
             string arguments = $"publish \"{csprojFile}\" --configuration Release --output \"{publishFolder}\"";
 
-            RunCommand("dotnet", arguments);
+            RunCommand("dotnet", arguments, projectDirectory);
         }
     }
 }

@@ -2,26 +2,30 @@
   "Projects": [
     {
       "Name": "Administration",
-      "Path": "C:\\Workspace\\Bizlogit\\bizion\\administration\\Admin.ApiService\\Admin.ApiService\\Admin.ApiService",
-      "DestPath": "C:\\Workspace\\Bizlogit\\Deploy",
-      "PowerShellScript": ".\\Scripts\\bizionApi.ps1"
+      "Path": "C:\\Users\\PC\\Desktop\\Workspace\\bizion\\administration\\Admin.ApiService\\Admin.ApiService\\Admin.ApiService",
+      "Version": 6,
+      "DestPath": "C:\\Users\\PC\\Desktop\\Workspace\\Deploy",
+      "PowerShellScript": "./Scripts/bizionApi.ps1"
     },
     {
       "Name": "Operation",
-      "Path": "C:\\Workspace\\Bizlogit\\bizion\\operation\\Bizion.Operation.ApiService",
-      "DestPath": "C:\\Workspace\\Bizlogit\\Deploy",
+      "Path": "C:\\Users\\PC\\Desktop\\Workspace\\bizion\\operation\\Bizion.Operation.ApiService",
+      "DestPath": "C:\\Users\\PC\\Desktop\\Workspace\\Deploy",
+      "Version": 6,
       "PowerShellScript": ".\\Scripts\\operation.ps1"
     },
     {
       "Name": "Konetic",
-      "Path": "C:\\Workspace\\Bizlogit\\konetic\\trunk\\Konetic.Web",
-      "DestPath": "C:\\Workspace\\Bizlogit\\Deploy",
+      "Path": "C:\\Users\\PC\\Desktop\\Workspace\\konetic\\trunk\\Konetic.Web",
+      "DestPath": "C:\\Users\\PC\\Desktop\\Workspace\\Deploy",
+      "Version": 4,
       "PowerShellScript": ".\\Scripts\\konetic.ps1"
     },
     {
       "Name": "IDMS",
-      "Path": "C:\\Workspace\\Bizlogit\\konetic\\trunk\\Konetic.IDMS.Web",
-      "DestPath": "C:\\Workspace\\Bizlogit\\Deploy",
+      "Path": "C:\\Users\\PC\\Desktop\\Workspace\\konetic\\trunk\\Konetic.IDMS.Web",
+      "DestPath": "C:\\Users\\PC\\Desktop\\Workspace\\Deploy",
+      "Version": 4,
       "PowerShellScript": ".\\Scripts\\idms.ps1"
     }
   ]
