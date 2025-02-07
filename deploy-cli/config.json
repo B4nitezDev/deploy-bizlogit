@@ -5,7 +5,7 @@
       "Path": "C:\\Users\\PC\\Desktop\\Workspace\\bizion\\administration\\Admin.ApiService\\Admin.ApiService\\Admin.ApiService",
       "Version": 6,
       "DestPath": "C:\\Users\\PC\\Desktop\\Workspace\\Deploy",
-      "PowerShellScript": "./Scripts/bizionApi.ps1"
+      "PowerShellScript": "C:\\Users\\PC\\Desktop\\deploy-bizlogit\\deploy-cli\\Scripts\\bizionApi.ps1"
     },
     {
       "Name": "Operation",

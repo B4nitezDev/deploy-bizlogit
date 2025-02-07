@@ -47,28 +47,17 @@ namespace deploy_cli.Utils
                 throw new Exception("Command no valido");
             }
 
-            using (var process = Process.Start(processStartInfo))
+            using (var process = new Process())
             {
-                if (process == null)
-                {
-                    throw new InvalidOperationException("Error: Unable to start PowerShell process.");
-                }
+                process.StartInfo = processStartInfo;
+                process.OutputDataReceived += (sender, e) => { if (e.Data != null) Console.WriteLine(e.Data); };
+                process.ErrorDataReceived += (sender, e) => { if (e.Data != null) Console.WriteLine($"Error: {e.Data}"); };
 
-                string output = process.StandardOutput.ReadToEnd();
-                string error = process.StandardError.ReadToEnd();
+                process.Start();
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
 
                 process.WaitForExit();
-
-                if (!string.IsNullOrEmpty(output))
-                {
-                    Console.WriteLine("PowerShell Output:");
-                    Console.WriteLine(output);
-                }
-
-                if (!string.IsNullOrEmpty(error))
-                {
-                    throw new InvalidOperationException($"PowerShell Error: {error}");
-                }
 
                 if (process.ExitCode != 0)
                 {
@@ -82,3 +71,4 @@ namespace deploy_cli.Utils
         }
     }
 }
+

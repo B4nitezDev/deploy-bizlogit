@@ -1,5 +1,5 @@
 # Rutas
-$carpetaOrigen = "C:\\Users\\PC\\Desktop\\Workspace\\bizion\\administration\\Admin.ApiService\\Admin.ApiService\\Admin.ApiService"
+$carpetaOrigen = "C:\Users\PC\Desktop\Workspace\bizion\administration\Admin.ApiService\Admin.ApiService\Admin.ApiService\bin\Release\net6.0"
 $carpetaDest = "C:\\Users\\PC\\Desktop\\Workspace\\Deploy"
 
 Write-Host "Verificando la existencia de la carpeta de destino..."
