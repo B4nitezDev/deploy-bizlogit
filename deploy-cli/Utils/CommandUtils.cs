@@ -18,31 +18,29 @@ namespace deploy_cli.Utils
         {
             ProcessStartInfo processStartInfo;
 
-            if (string.IsNullOrEmpty(script))
+            if (string.IsNullOrEmpty(file))
             {
                 processStartInfo = new ProcessStartInfo()
                 {
                     FileName = "powershell.exe",
-                    Arguments = $"-NoProfile -ExecutionPolicy Bypass \"{script}\"",
+                    Arguments = $"-NoProfile -ExecutionPolicy Bypass -Command \"{script}\"",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
                     CreateNoWindow = true
                 };
-
             }
-            else if (string.IsNullOrEmpty(file))
+            else if (string.IsNullOrEmpty(script))
             {
                 processStartInfo = new ProcessStartInfo()
                 {
                     FileName = "powershell.exe",
-                    Arguments = $"-NoProfile -ExecutionPolicy Bypass -File \"{script}\"",
+                    Arguments = $"-NoProfile -ExecutionPolicy Bypass -File \"{file}\"",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
                     CreateNoWindow = true
                 };
-
             }
             else
             {
