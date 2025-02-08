@@ -15,7 +15,7 @@ namespace deploy_cli.Utils
             catch (Exception ex)
             {
                 Console.WriteLine($"Error loading config: {ex.Message}");
-                return new Config { Projects = new List<Project>() };
+                throw;
             }
         }
     }
