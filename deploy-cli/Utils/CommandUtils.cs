@@ -11,10 +11,10 @@ namespace deploy_cli.Utils
 
             // Dejo configurado para el caso de tener que usar scripts en vez de files
             ProcessStartInfo procces = SelectScriptOrFile(null, scriptPath);
-            RunPowerShellCommand(null, scriptPath, procces);
+            RunPowerShellCommand(procces);
         }
 
-        public static void RunPowerShellCommand(string? script, string? file, ProcessStartInfo start)
+        public static void RunPowerShellCommand(ProcessStartInfo start)
         {
             using (var process = new Process())
             {
