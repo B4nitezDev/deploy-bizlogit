@@ -33,67 +33,33 @@ namespace MyCliApp
                 if (!Directory.Exists(project.Path))
                     throw new DirectoryNotFoundException($"Error: The path '{project.Path}' does not exist.");
 
-                // Compilar la solución en modo Release
-                Console.WriteLine("Building the solution in Release mode...");
-                if(project.Version == 6)
+                switch (project.Version)
                 {
-                    Console.WriteLine("NET 6");
-
-                    Console.WriteLine("Cleaning the solution...");
-                    NetUtils.RunCommand("dotnet", "clean", project.Path);
-
-
-                    NetUtils.RunCommand("dotnet", "build --configuration Release", project.Path);
-                    // Publicar el proyecto
-                    Console.WriteLine("Publishing the project...");
-                    NetUtils.PublishProject(project.Path.ToString(), project.Version);
-
+                    case 4: 
+                        ProccessNet4(project);
+                        break;
+                    case 6:
+                        ProccessNet6(project);
+                        break;
+                    case 100:
+                        Mobile(project);
+                        break;
+                    case 101:
+                        Bizion(project);
+                        break;
+                    default:
+                        throw new Exception("Version no soportada");
                 }
-                else if (project.Version == 4)
+
+
+                if (string.IsNullOrEmpty(project.PowerShellScript))
                 {
-                    Console.WriteLine("NET 4");
-
-                    Console.WriteLine("Cleaning the solution...");
-                    NetUtils.RunCommand("dotnet", "clean", project.Path);
-
-
-                    string msBuildPath = @"C:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Current\Bin\MSBuild.exe";
-                    string csprojFile = Directory.GetFiles(project.Path, "*.csproj", SearchOption.TopDirectoryOnly).FirstOrDefault();
-                    if (csprojFile == null)
-                    {
-                        throw new FileNotFoundException($"Error: No se encontró ningún archivo .csproj en {project.Path}.");
-                    }
-                    NetUtils.RunCommand(msBuildPath, $"\"{csprojFile}\" /p:Configuration=Release", project.Path);
-                    // Publicar el proyecto
-                    Console.WriteLine("Publishing the project...");
-                    NetUtils.PublishProject(project.Path.ToString(), project.Version);
-
+                    Console.WriteLine("No hay script configurado");
+                    return;
                 }
-                else if(project.Version == 100)
-                {
-                    Console.WriteLine("NODE");
-                    FrontUtil.BuildFrontMobile(project.Path);
-                }
-                else if (project.Version == 101)
-                {
-                    Console.WriteLine("NODE");
-                    FrontUtil.BuildFromBizion(project.Path);
-                }
-                else
-                {
-                    Console.WriteLine("Version no soportada");
-                }
-               
+
                 // Ejecutar el script de PowerShell si está configurado
-                if (!string.IsNullOrEmpty(project.PowerShellScript))
-                {
-                    Console.WriteLine($"Executing PowerShell script: {project.PowerShellScript}");
-                    CommandUtils.RunPowerShellScript(project.PowerShellScript);
-                }
-                else
-                {
-                    Console.WriteLine("No PowerShell script configured for this project.");
-                }
+                ProccessPowershelScript(project.PowerShellScript);
             }
             catch (Exception ex)
             {
@@ -142,6 +108,61 @@ namespace MyCliApp
                 Console.WriteLine($"Selected project: {selectedProject.Name} - {selectedProject.Path}");
                 ProcessProject(selectedProject);
             }
+        }
+
+        static void ProccessNet6(Project project)
+        {
+            // Clean la solucion
+            Console.WriteLine("Cleaning the solution...");
+            NetUtils.RunCommand("dotnet", "clean", project.Path);
+
+            // Compilar la solución en modo Release
+            Console.WriteLine("Building the solution in Release mode...");
+            NetUtils.RunCommand("dotnet", "build --configuration Release", project.Path);
+
+            // Publicar el proyecto
+            Console.WriteLine("Publishing the project...");
+            NetUtils.PublishProject(project.Path.ToString(), project.Version);
+        }
+
+        static void ProccessNet4(Project project)
+        {
+            string msBuildPath = @"C:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Current\Bin\MSBuild.exe";
+
+            // Clean la solucion
+            Console.WriteLine("Cleaning the solution...");
+            NetUtils.RunCommand("dotnet", "clean", project.Path);
+
+            string csprojFile = Directory.GetFiles(project.Path, "*.csproj", SearchOption.TopDirectoryOnly).FirstOrDefault();
+            if (csprojFile == null)
+                throw new FileNotFoundException($"Error: No se encontró ningún archivo .csproj en {project.Path}.");
+
+            // Compilar la solucion en modo Release
+            Console.WriteLine("Building the solution in Release mode...");
+            NetUtils.RunCommand(msBuildPath, $"\"{csprojFile}\" /p:Configuration=Release", project.Path);
+
+            // Publicar el proyecto
+            Console.WriteLine("Publishing the project...");
+            NetUtils.PublishProject(project.Path.ToString(), project.Version);
+
+        }
+
+        static void Mobile(Project project)
+        {
+            Console.WriteLine("NODE");
+            FrontUtil.BuildFrontMobile(project.Path);
+        }
+
+        static void Bizion(Project project)
+        {
+            Console.WriteLine("NODE");
+            FrontUtil.BuildFromBizion(project.Path);
+        }
+
+        static void ProccessPowershelScript(string path)
+        {
+            Console.WriteLine($"Executing PowerShell script: {path}");
+            CommandUtils.RunPowerShellScript(path);
         }
     }
 }
